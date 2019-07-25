@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -22,12 +23,14 @@ public class StartScreen implements ActionListener{
 	JButton hostButton;
 	JButton joinButton;
 	
+	public JFrame home;
+	
 	public StartScreen() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
 		final int SCREEN_WIDTH = (int) screenSize.getWidth();
 		
-		JFrame home = new JFrame("Anagrams");
+		home = new JFrame("Anagrams");
 		JPanel buttonPanel = new JPanel();
 		
 		buttonPanel.setLayout(new GridLayout(2,1));
@@ -88,9 +91,34 @@ public class StartScreen implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(hostButton) == true) {
 			System.out.println("hosting");
+			
+			home.remove(joinButton);
+			home.remove(hostButton);
+			
+			ImageIcon waitingImage = new ImageIcon("../images/waiting.png");
+			JLabel waiting = new JLabel(waitingImage);
+			waiting.setBounds(50,50,300,300);
+			home.add(waiting);
+			
+			home.revalidate();
+			home.repaint();
+			
+			new Host();
 		}
 		if(e.getSource().equals(joinButton) == true) {
 			System.out.println("joining");
+			
+			home.remove(joinButton);
+			home.remove(hostButton);
+			home.revalidate();
+			home.repaint();
+			
+			ImageIcon waitingImage = new ImageIcon("../images/waiting.png");
+			JLabel waiting = new JLabel(waitingImage);
+			waiting.setBounds(50,50,300,300);
+			home.add(waiting);
+			
+			new Client();
 		}
 		
 	}
