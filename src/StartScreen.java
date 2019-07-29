@@ -22,8 +22,10 @@ public class StartScreen extends JFrame{
 		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
 		final int SCREEN_WIDTH = (int) screenSize.getWidth();
 		
+		
+		//load in custom font
 		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, new File("../resources/Scramble.ttf"));
+			font = Font.createFont(Font.TRUETYPE_FONT, new File("../resources/KBChatterBox.ttf"));
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			ge.registerFont(font);
 		}
@@ -31,6 +33,7 @@ public class StartScreen extends JFrame{
 			e.printStackTrace();
 		}
 		
+		//create new JFrame with some settings
 		JFrame frame = new JFrame();
 		frame.setSize(SCREEN_WIDTH ,SCREEN_HEIGHT);
 		frame.setTitle("Anagrams");
@@ -40,16 +43,15 @@ public class StartScreen extends JFrame{
 		
 		JLabel background = new Background();
 		
-	
-		
-		
+		//button for host
 		JLabel host = new JLabel("Host");
-		host.setFont(font.deriveFont(50f));
+		host.setFont(font.deriveFont(60f));
 		host.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		host.setBounds(SCREEN_WIDTH/2 - 125, SCREEN_HEIGHT - 300, 300, 50);
 		
+		//button for joining a game
 		JLabel join = new JLabel("Join");
-		join.setFont(font.deriveFont(50f));
+		join.setFont(font.deriveFont(60f));
 		join.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		join.setBounds(SCREEN_WIDTH/2 - 125, SCREEN_HEIGHT - 225, 300, 50);
 		
@@ -59,10 +61,12 @@ public class StartScreen extends JFrame{
 				frame.remove(join);
 				frame.remove(host);
 				frame.repaint();
-				new Host();
+				new GameBoard();
+				frame.dispose();
+				//DOESNT SHOW UNTIL THE CLIENT CONNECTS
 				JLabel waiting = new JLabel("<html>Waiting<br/>for player</html>", SwingConstants.CENTER);
-				waiting.setFont(font.deriveFont(40f));
-				waiting.setBounds(SCREEN_WIDTH/2 - 375, SCREEN_HEIGHT - 400, 800, 300);
+				waiting.setFont(font.deriveFont(50f));
+				waiting.setBounds(SCREEN_WIDTH/2 - 400, SCREEN_HEIGHT - 400, 800, 300);
 				frame.add(waiting);
 			}
 		});
@@ -75,9 +79,10 @@ public class StartScreen extends JFrame{
 				frame.remove(host);
 				frame.repaint();
 				new Client();
+				//display waiting for host
 				JLabel waiting = new JLabel("<html>Waiting<br/>for host</html>", SwingConstants.CENTER);
-				waiting.setFont(font.deriveFont(40f));
-				waiting.setBounds(SCREEN_WIDTH/2 - 375, SCREEN_HEIGHT -400, 800, 300);
+				waiting.setFont(font.deriveFont(50f));
+				waiting.setBounds(SCREEN_WIDTH/2 - 400, SCREEN_HEIGHT -400, 800, 300);
 				frame.add(waiting);
 			}
 		});
