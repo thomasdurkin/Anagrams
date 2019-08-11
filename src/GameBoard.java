@@ -41,10 +41,22 @@ public class GameBoard {
 	
 	public String strLetters;
 	
+	ArrayList<JLabel> word = new ArrayList<JLabel>();
+	
 	public GameBoard(boolean host, DataOutputStream o, String s) {
 		this.isHost = host;
 		output = new DataOutputStream(o);
 		strLetters = s;
+		
+		Font font = null;
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT, new File("../resources/KBChatterBox.ttf"));
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			ge.registerFont(font);
+		}
+		catch(IOException | FontFormatException e) {
+			e.printStackTrace();
+		}
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
@@ -80,6 +92,22 @@ public class GameBoard {
 		}
 		
 		int start_x = SCREEN_WIDTH / 2 - 150, start_y = SCREEN_HEIGHT - 300;
+		for(int i = 0; i < 6; i++) {
+			JLabel empty = new JLabel("_");
+			empty.setBounds(start_x, start_y - 75, 75, 75);
+			empty.setFont(font.deriveFont(70f));
+			word.add(empty);
+			empty.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					System.out.println("clicked " + l.letter +" !");
+				}	
+			});
+			gameFrame.add(empty);
+			start_x += 65;
+		}
+		start_x = SCREEN_WIDTH / 2 - 150; 
+		start_y = SCREEN_HEIGHT - 300;
 		for(int i = 0; i < letters.size(); i++) {
 			Letter l = letters.get(i);
 			l.letterLabel.setBounds(start_x, start_y, 75, 75);
@@ -98,15 +126,7 @@ public class GameBoard {
 		timeLabel.setFont(new Font(timeLabel.getFont().getName(), Font.PLAIN, 60));
 		b.add(timeLabel);
 		
-		Font font = null;
-		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, new File("../resources/KBChatterBox.ttf"));
-			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			ge.registerFont(font);
-		}
-		catch(IOException | FontFormatException e) {
-			e.printStackTrace();
-		}
+		
 		JLabel sc = new JLabel("Scores");
 		sc.setFont(font.deriveFont(40f));
 		
