@@ -5,6 +5,7 @@ import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import javax.swing.JLabel;
@@ -37,11 +38,51 @@ public class Letter{
 	
 	public ArrayList<Letter> getLetters(){
 		
+		int vowelcount = 0;
+		int consonantcount = 0;
+		String vowels = "AEIOU";
+		String consonants = "BCDFGHJKLMNPQRSTVWXYZ";
+
 		ArrayList<Letter> letters = new ArrayList<Letter>();
-		for(int i = 0; i < 6; i++) {
-			letters.add(randomLetter());
+		ArrayList<Character> vowelList = new ArrayList<Character>();
+		ArrayList<Character> consonantList = new ArrayList<Character>();
+
+		while(letters.size() < 6){
+			Letter temp = randomLetter();
+	
+			//Checking Rules to see if current letter can be added to list
+			if(vowels.indexOf(temp.letter) != -1){ //current letter is vowel
+				vowelcount++;
+				vowelList.add(temp.letter);
+		
+				if((vowelcount < 4) && (Collections.frequency(vowelList, temp.letter) < 3)){ //if vowel can be added to Letters List
+					letters.add(temp);
+				}
+				else{ //if vowel cannot be added to list, remove from counter and vowel list
+					vowelcount--;
+					vowelList.remove(temp.letter);
+				}
+			}
+			
+			else{
+				if(consonantcount < 4) {//current letter is consonant
+					consonantcount++;
+					consonantList.add(temp.letter);
+			
+					if(Collections.frequency(consonantList, temp.letter) < 3){ //if consonant can be added to letters list
+						letters.add(temp);
+					}
+					else{ //if consonant cannot be added to letters list, remove from consonant list
+						consonantList.remove(temp.letter);
+						consonantcount--;
+					}
+				}
+			}
 		}
+
 		return letters;
+
+
 	}
 	
 	Letter randomLetter() {

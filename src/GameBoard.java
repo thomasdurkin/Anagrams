@@ -47,11 +47,11 @@ public class GameBoard {
 		strLetters = s;
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
-//		final int SCREEN_WIDTH = (int) screenSize.getWidth();
+		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
+		final int SCREEN_WIDTH = (int) screenSize.getWidth();
 		
-		final int SCREEN_HEIGHT = 300;
-		final int SCREEN_WIDTH = 300;
+//		final int SCREEN_HEIGHT = 300;
+//		final int SCREEN_WIDTH = 300;
 		
 		gameFrame = new JFrame("Anagrams");
 		gameFrame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
