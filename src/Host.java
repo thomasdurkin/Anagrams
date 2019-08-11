@@ -20,6 +20,7 @@ public class Host implements Runnable{
 	
 	public Host() {
 		try {
+			System.out.println("Starting up host");
 			ss = new ServerSocket(3000);
 			s = ss.accept();
 			output = new DataOutputStream(s.getOutputStream());

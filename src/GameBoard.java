@@ -29,6 +29,8 @@ public class GameBoard {
 	int scores = 0;
 	JLabel scoreLabel = new JLabel(Integer.toString(scores));
 	
+	boolean isHost;
+	
 	public GameBoard() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		final int SCREEN_HEIGHT = (int) screenSize.getHeight();

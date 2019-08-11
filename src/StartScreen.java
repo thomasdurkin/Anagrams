@@ -19,9 +19,11 @@ public class StartScreen extends JFrame{
 	
 	public StartScreen() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
-		final int SCREEN_WIDTH = (int) screenSize.getWidth();
+//		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
+//		final int SCREEN_WIDTH = (int) screenSize.getWidth();
 		
+		final int SCREEN_HEIGHT = 300;
+		final int SCREEN_WIDTH = 300;
 		
 		//load in custom font
 		try {
@@ -61,7 +63,7 @@ public class StartScreen extends JFrame{
 				frame.remove(join);
 				frame.remove(host);
 				frame.repaint();
-				new GameBoard();
+				new Host();
 				frame.dispose();
 				//DOESNT SHOW UNTIL THE CLIENT CONNECTS
 				JLabel waiting = new JLabel("<html>Waiting<br/>for player</html>", SwingConstants.CENTER);
@@ -79,6 +81,7 @@ public class StartScreen extends JFrame{
 				frame.remove(host);
 				frame.repaint();
 				new Client();
+				frame.dispose();
 				//display waiting for host
 				JLabel waiting = new JLabel("<html>Waiting<br/>for host</html>", SwingConstants.CENTER);
 				waiting.setFont(font.deriveFont(50f));

@@ -20,6 +20,7 @@ public class Client implements Runnable {
 	
 	public Client() {
 		try {
+			System.out.println("Starting up client");
 			s = new Socket("127.0.0.1", 3000);
 			output = new DataOutputStream(s.getOutputStream());
 			input = new DataInputStream(s.getInputStream());
