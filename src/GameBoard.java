@@ -27,6 +27,7 @@ public class GameBoard {
 	
 	JFrame gameFrame;
 	JPanel gamePanel = new JPanel();
+	int index = 0;
 	
 	Letter l = new Letter(' ');
 	int t = 60;
@@ -42,13 +43,20 @@ public class GameBoard {
 	public String strLetters;
 	
 	ArrayList<JLabel> word = new ArrayList<JLabel>();
-	
+	ArrayList<JLabel> givenLetters = new ArrayList<JLabel>();
+	Font font = null;
+	ArrayList<Letter> letters = new ArrayList<Letter>();
+	boolean[] click;
+
 	public GameBoard(boolean host, DataOutputStream o, String s) {
+		click = new boolean[6];
+		for (int i = 0; i<6; i++) {
+			click[i] = false;
+		}
 		this.isHost = host;
 		output = new DataOutputStream(o);
 		strLetters = s;
 		
-		Font font = null;
 		try {
 			font = Font.createFont(Font.TRUETYPE_FONT, new File("../resources/KBChatterBox.ttf"));
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -73,7 +81,6 @@ public class GameBoard {
 		
 		
 		
-		ArrayList<Letter> letters = new ArrayList<Letter>();
 		//if the gameboard is for the host then get the letters for the game
 		// and send them to the client
 		if(isHost) {
@@ -100,7 +107,23 @@ public class GameBoard {
 			empty.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					System.out.println("clicked " + l.letter +" !");
+					System.out.println("clicked on word " + empty.getText() +" !");
+					String clicked = empty.getText();
+					if (word.indexOf(empty) == index-1) {
+						word.get(word.indexOf(empty)).setText("_");
+						word.get(word.indexOf(empty)).setFont(font.deriveFont(70f));
+						int d = 0;
+						for (int i = 0; i<6; i++) {
+							if (clicked.equals(String.valueOf(letters.get(i).letter))) {
+								d = i;
+								break;
+							}
+						}
+						givenLetters.get(d).setText(clicked);
+						givenLetters.get(d).setFont(font.deriveFont(70f));
+						click[d] = false;
+						index--;
+					}
 				}	
 			});
 			gameFrame.add(empty);
@@ -111,10 +134,18 @@ public class GameBoard {
 		for(int i = 0; i < letters.size(); i++) {
 			Letter l = letters.get(i);
 			l.letterLabel.setBounds(start_x, start_y, 75, 75);
+			givenLetters.add(l.letterLabel);
 			l.letterLabel.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					System.out.println("clicked " + l.letter +" !");
+					if (!click[givenLetters.indexOf(l.letterLabel)]) {
+						click[givenLetters.indexOf(l.letterLabel)] = true;
+						word.get(index).setText(String.valueOf(l.letter));
+						givenLetters.get(givenLetters.indexOf(l.letterLabel)).setText("_");
+						givenLetters.get(givenLetters.indexOf(l.letterLabel)).setFont(font.deriveFont(70f));
+						index++;
+					}
 				}	
 			});
 			gameFrame.add(l.letterLabel);
