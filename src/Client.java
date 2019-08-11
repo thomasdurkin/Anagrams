@@ -1,5 +1,6 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -17,6 +18,7 @@ public class Client implements Runnable {
 	boolean isRunning = false;
 	boolean connected = false;
 	
+	GameBoard gb;
 	
 	public Client() {
 		try {
@@ -24,7 +26,6 @@ public class Client implements Runnable {
 			s = new Socket("127.0.0.1", 3000);
 			output = new DataOutputStream(s.getOutputStream());
 			input = new DataInputStream(s.getInputStream());
-			new GameBoard();
 			new Thread(this).start();
 		}
 		catch(IOException e) {
@@ -40,6 +41,9 @@ public class Client implements Runnable {
 		
 			try {
 				String str_in = input.readUTF();
+				if (str_in.length() == 6) {
+					gb = new GameBoard(false, output, str_in);
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

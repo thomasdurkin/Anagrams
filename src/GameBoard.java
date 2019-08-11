@@ -1,10 +1,16 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 
@@ -31,10 +37,21 @@ public class GameBoard {
 	
 	boolean isHost;
 	
-	public GameBoard() {
+	DataOutputStream output;
+	
+	public String strLetters;
+	
+	public GameBoard(boolean host, DataOutputStream o, String s) {
+		this.isHost = host;
+		output = new DataOutputStream(o);
+		strLetters = s;
+		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
-		final int SCREEN_WIDTH = (int) screenSize.getWidth();
+//		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
+//		final int SCREEN_WIDTH = (int) screenSize.getWidth();
+		
+		final int SCREEN_HEIGHT = 300;
+		final int SCREEN_WIDTH = 300;
 		
 		gameFrame = new JFrame("Anagrams");
 		gameFrame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -43,7 +60,25 @@ public class GameBoard {
 		gameFrame.getContentPane().setBackground(Color.CYAN);
 		
 		
-		ArrayList<Letter> letters = l.getLetters();
+		
+		ArrayList<Letter> letters = new ArrayList<Letter>();
+		//if the gameboard is for the host then get the letters for the game
+		// and send them to the client
+		if(isHost) {
+			letters = l.getLetters();
+			try {
+				strLetters = stringLetters(letters);
+				output.writeUTF(strLetters);
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			for(int i = 0; i < strLetters.length();i++) {
+				letters.add(new Letter(strLetters.charAt(i)));
+			}
+		}
+		
 		int start_x = SCREEN_WIDTH / 2 - 150, start_y = SCREEN_HEIGHT - 300;
 		for(int i = 0; i < letters.size(); i++) {
 			Letter l = letters.get(i);
@@ -59,8 +94,25 @@ public class GameBoard {
 		}
 		
 		Box b = Box.createVerticalBox();
+		
+		timeLabel.setFont(new Font(timeLabel.getFont().getName(), Font.PLAIN, 60));
 		b.add(timeLabel);
-		b.add(new JLabel("Scores"));
+		
+		Font font = null;
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT, new File("../resources/KBChatterBox.ttf"));
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			ge.registerFont(font);
+		}
+		catch(IOException | FontFormatException e) {
+			e.printStackTrace();
+		}
+		JLabel sc = new JLabel("Scores");
+		sc.setFont(font.deriveFont(40f));
+		
+		b.add(sc);
+		scoreLabel.setFont(font.deriveFont(40f));
+		//		scoreLabel.setFont(new Font(scoreLabel.getFont().getName(), Font.PLAIN, 100));
 		b.add(scoreLabel);
 		gamePanel.add(b);
 		gameFrame.add(gamePanel, BorderLayout.CENTER);
@@ -91,6 +143,14 @@ public class GameBoard {
 				timeLabel.setText(sec());
 			}
 		}, 1000, 1000);
+	}
+	
+	public String stringLetters(ArrayList<Letter> letters) {
+		String allLetters = "";
+		for(Letter l: letters) {
+			allLetters += l.letter;
+		}
+		return allLetters;
 	}
 
 }

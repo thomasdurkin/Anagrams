@@ -25,7 +25,7 @@ public class Host implements Runnable{
 			s = ss.accept();
 			output = new DataOutputStream(s.getOutputStream());
 			input = new DataInputStream(s.getInputStream());
-			new GameBoard();
+			new GameBoard(true, output, null);
 			new Thread(this).start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
