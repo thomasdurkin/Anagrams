@@ -15,6 +15,7 @@ import java.io.IOException;
 
 public class StartScreen extends JFrame{
 	private Font font;
+	boolean hostSelected, clientSelected;
 	
 	
 	public StartScreen() {
@@ -60,16 +61,15 @@ public class StartScreen extends JFrame{
 		host.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				frame.remove(join);
-				frame.remove(host);
-				frame.repaint();
-				new Host();
-				frame.dispose();
-				//DOESNT SHOW UNTIL THE CLIENT CONNECTS
+				background.remove(join);
+				background.remove(host);
 				JLabel waiting = new JLabel("<html>Waiting<br/>for player</html>", SwingConstants.CENTER);
 				waiting.setFont(font.deriveFont(50f));
 				waiting.setBounds(SCREEN_WIDTH/2 - 400, SCREEN_HEIGHT - 400, 800, 300);
-				frame.add(waiting);
+				background.add(waiting);
+				frame.setContentPane(background);
+				frame.revalidate();
+				hostSelected = true;
 			}
 		});
 		
@@ -77,16 +77,16 @@ public class StartScreen extends JFrame{
 		join.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				frame.remove(join);
-				frame.remove(host);
-				frame.repaint();
-				new Client();
-				frame.dispose();
+				background.remove(join);
+				background.remove(host);
 				//display waiting for host
 				JLabel waiting = new JLabel("<html>Waiting<br/>for host</html>", SwingConstants.CENTER);
 				waiting.setFont(font.deriveFont(50f));
 				waiting.setBounds(SCREEN_WIDTH/2 - 400, SCREEN_HEIGHT -400, 800, 300);
-				frame.add(waiting);
+				background.add(waiting);
+				frame.setContentPane(background);
+				frame.revalidate();
+				clientSelected = true;
 			}
 		});
 		
@@ -96,6 +96,24 @@ public class StartScreen extends JFrame{
 		frame.setContentPane(background);
 		
 		frame.setVisible(true);
+		
+		while(!hostSelected && !clientSelected) {
+			try {
+				Thread.sleep(1);
+			} catch(InterruptedException ie) {
+				ie.printStackTrace();
+			}
+		}
+		if(hostSelected) {
+			System.out.println("Creating Host");
+			new Host();
+			frame.dispose();
+		}
+		else {
+			System.out.println("Creating Client");
+			new Client();
+			frame.dispose();
+		}
 		
 	}
 
