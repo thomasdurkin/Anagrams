@@ -40,6 +40,7 @@ public class Letter{
 		
 		int vowelcount = 0;
 		int consonantcount = 0;
+		int size = 0;
 		String vowels = "AEIOU";
 		String consonants = "BCDFGHJKLMNPQRSTVWXYZ";
 
@@ -47,7 +48,7 @@ public class Letter{
 		ArrayList<Character> vowelList = new ArrayList<Character>();
 		ArrayList<Character> consonantList = new ArrayList<Character>();
 
-		while(letters.size() < 6){
+		while(size < 6){
 			Letter temp = randomLetter();
 	
 			//Checking Rules to see if current letter can be added to list
@@ -57,10 +58,11 @@ public class Letter{
 		
 				if((vowelcount < 4) && (Collections.frequency(vowelList, temp.letter) < 3)){ //if vowel can be added to Letters List
 					letters.add(temp);
+					size++;
 				}
 				else{ //if vowel cannot be added to list, remove from counter and vowel list
 					vowelcount--;
-					vowelList.remove(temp.letter);
+					vowelList.remove((Character)temp.letter);
 				}
 			}
 			
@@ -71,9 +73,10 @@ public class Letter{
 			
 					if(Collections.frequency(consonantList, temp.letter) < 3){ //if consonant can be added to letters list
 						letters.add(temp);
+						size++;
 					}
 					else{ //if consonant cannot be added to letters list, remove from consonant list
-						consonantList.remove(temp.letter);
+						consonantList.remove((Character)temp.letter);
 						consonantcount--;
 					}
 				}
