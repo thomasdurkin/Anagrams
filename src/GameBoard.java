@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Timer;
 
@@ -29,6 +30,7 @@ public class GameBoard implements MouseListener{
 	
 	JFrame gameFrame;
 	JPanel gamePanel = new JPanel();
+	CheckWord checker = new CheckWord();
 	
 	Letter l = new Letter(' ');
 	int t = 60;
@@ -48,11 +50,21 @@ public class GameBoard implements MouseListener{
 	Font font = null;
 	ArrayList<Letter> letters = new ArrayList<Letter>();
 	boolean[] click;
+	int[] tracked;
+	
+	String[] formed;
+	ArrayList<String> scored = new ArrayList<String>();
 	
 	int index = 0;
 	
 
 	public GameBoard(boolean host, DataOutputStream o, String s) {
+		tracked = new int[6];
+		formed = new String[6];
+		for (int i = 0; i<6; i++) {
+			formed[i] = "";
+			tracked[i] = -1;
+		}
 		click = new boolean[6];
 		for (int i = 0; i<6; i++) {
 			click[i] = false;
@@ -119,16 +131,18 @@ public class GameBoard implements MouseListener{
 					if (word.indexOf(empty) == index-1) {
 						word.get(word.indexOf(empty)).setText("_");
 						word.get(word.indexOf(empty)).setFont(font.deriveFont(70f));
-						int d = 0;
-						for (int i = 0; i<6; i++) {
-							if (clicked.equals(String.valueOf(letters.get(i).letter))) {
-								d = i;
-								break;
-							}
-						}
-						givenLetters.get(d).setText(clicked);
-						givenLetters.get(d).setFont(font.deriveFont(70f));
-						click[d] = false;
+						formed[word.indexOf(empty)] = "";
+//						int d = 0;
+//						for (int i = 0; i<6; i++) {
+//							if (clicked.equals(String.valueOf(letters.get(i).letter))) {
+//								d = i;
+//								break;
+//							}
+//						}
+						givenLetters.get(tracked[index-1]).setText(clicked);
+						givenLetters.get(tracked[index-1]).setFont(font.deriveFont(70f));
+						click[tracked[index-1]] = false;
+						tracked[index-1] = -1;
 						index--;
 					}
 				}	
@@ -148,7 +162,9 @@ public class GameBoard implements MouseListener{
 					System.out.println("clicked " + l.letter +" !");
 					if (!click[givenLetters.indexOf(l.letterLabel)]) {
 						click[givenLetters.indexOf(l.letterLabel)] = true;
+						tracked[index] = givenLetters.indexOf(l.letterLabel);
 						word.get(index).setText(String.valueOf(l.letter));
+						formed[index] = String.valueOf(l.letter);
 						givenLetters.get(givenLetters.indexOf(l.letterLabel)).setText("_");
 						givenLetters.get(givenLetters.indexOf(l.letterLabel)).setFont(font.deriveFont(70f));
 						index++;
@@ -182,7 +198,31 @@ public class GameBoard implements MouseListener{
 		enter.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("submit word");
+				String d_word = "";
+				for (int i = 0; i<6; i++) {
+					if (!formed[i].equals("")) {
+						d_word+=formed[i];
+					}
+				}
+				if (d_word.equals("")) {
+					return ;
+				}
+//				System.out.println("submit word "+d_word);
+				int p = 0;
+				try {
+					p = checker.check(d_word);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				if (p>0 && !scored.contains(d_word)) {
+					scores+=p;
+					scored.add(d_word);
+				} 
+				scoreLabel.setText(String.valueOf(scores));
+				System.out.println("word worth "+p);
+				scoreLabel.setFont(font.deriveFont(40f));
+				clear();
 			}	
 		});
 		background.add(enter);
@@ -195,6 +235,7 @@ public class GameBoard implements MouseListener{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				System.out.println("reseting word");
+				clear();
 			}	
 		});
 		background.add(reset);
@@ -204,6 +245,19 @@ public class GameBoard implements MouseListener{
 		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameFrame.setVisible(true);
 		
+	}
+	
+	public void clear() {
+		for (int i = 0; i<6; i++) {
+			word.get(i).setText("_");
+			word.get(i).setFont(font.deriveFont(70f));
+			givenLetters.get(i).setText(String.valueOf(strLetters.charAt(i)));
+			givenLetters.get(i).setFont(font.deriveFont(70f));
+			formed[i] = "";
+			click[i] = false;
+			tracked[i] = -1;
+		}
+		index = 0;
 	}
 
 	public void make(JLabel label) {
