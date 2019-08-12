@@ -79,6 +79,7 @@ public class Letter{
 			//make sure we have more then 2 vowels
 			if(letters.size() == 6 && vowelcount < 2) {
 				letters.clear();
+				vowelcount = 0;
 			}
 		}
 		return letters;

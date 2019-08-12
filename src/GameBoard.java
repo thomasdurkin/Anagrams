@@ -57,6 +57,7 @@ public class GameBoard implements MouseListener{
 	
 	int index = 0;
 	
+	JLabel completed = new JLabel("dsjkaldsa");
 
 	public GameBoard(boolean host, DataOutputStream o, String s) {
 		tracked = new int[6];
@@ -190,6 +191,8 @@ public class GameBoard implements MouseListener{
 		scoreLabel.setFont(font.deriveFont(40f));
 		scoreLabel.setBounds(SCREEN_WIDTH/2 + 50, 120, 250, 50);
 		background.add(scoreLabel);
+		
+		background.add(completed);
 		
 		JLabel enter = new JLabel("ENTER");
 		enter.setFont(font.deriveFont(30f));
