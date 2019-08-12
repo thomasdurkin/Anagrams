@@ -18,6 +18,7 @@ public class Host implements Runnable{
 	boolean isRunning = false;
 	boolean connected = false;
 	
+	static String finale = "";
 	
 	public Host() {
 		try {
@@ -72,8 +73,8 @@ public class Host implements Runnable{
 		}
 	}
 	
-	public static void sendScore(int s){
-		String temp = Integer.toString(s);
+	public static void sendScore(int s, String words){
+		String temp = Integer.toString(s)+","+words;
 		try{
 			output.writeUTF(temp);
 		}
@@ -92,7 +93,12 @@ public class Host implements Runnable{
 				e.printStackTrace();
 			}
 		}
-		return Integer.parseInt(temp);
+		int re = Integer.valueOf(temp.split(",")[0]);
+		String[] l = temp.split(",");
+		for (int i = 1; i<l.length; i++) {
+			finale += l[i]+"\n";
+		}
+		return re;
 	}
 	
 	public static void sendResult(String r){

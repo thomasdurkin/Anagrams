@@ -67,8 +67,8 @@ public class Letter{
 						vowelcount++;
 					}
 					//make sure there are not more then 4 vowels
-					if(vowelcount > 4)
-						break;
+					if(vowelcount > 3)
+						continue;
 					Letter temp = new Letter(l);
 					//no more than two of the same letters
 					if(Collections.frequency(letters, temp) > 2)

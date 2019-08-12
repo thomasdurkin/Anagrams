@@ -61,7 +61,8 @@ public class GameBoard implements MouseListener{
 	
 	int index = 0;
 	
-	JLabel completed = new JLabel("dsjkaldsa");
+	JPanel completed = new JPanel();
+	Box content = null;
 	
 	boolean val = false;
 	boolean inval = false;
@@ -203,11 +204,15 @@ public class GameBoard implements MouseListener{
 		sc.setBounds(SCREEN_WIDTH/2 - 100, 120, 250, 50);
 		background.add(sc);
 
-		scoreLabel.setFont(font.deriveFont(40f));
+		scoreLabel.setFont(font.deriveFont(60f));
 		scoreLabel.setBounds(SCREEN_WIDTH/2 + 50, 120, 250, 50);
 		background.add(scoreLabel);
 		
 		background.add(completed);
+		completed.setOpaque(false);;
+		completed.setBounds(SCREEN_WIDTH/2-150,200,250,500);
+		Box b = Box.createVerticalBox();
+		b.add(new JLabel("Your words:"));
 		
 		JLabel enter = new JLabel("ENTER");
 		enter.setFont(font.deriveFont(30f));
@@ -265,19 +270,60 @@ public class GameBoard implements MouseListener{
 					scores+=p;
 					scored.add(d_word);
 					val = true;
-					valid.setBounds(0, 0, 100, 50);
+					t = 1;
+					for(int i = 0; i < word.size(); i++) {
+						word.get(i).setOpaque(true);
+						word.get(i).setBackground(Color.GREEN);
+					}
 					
+					timer = new Timer();
+					timer.scheduleAtFixedRate(new TimerTask() {
+						public void run() {
+							t--;
+							if(t == 0) {
+								for(int i = 0; i < word.size(); i++) {
+									word.get(i).setOpaque(false);
+									word.get(i).setBackground(Color.BLUE);
+								}
+								timer.cancel();
+							}
+						}
+					}, 200, 200);
+					Box box = b;
+					JLabel tp = new JLabel(d_word);
+					tp.setFont(font.deriveFont(40f));
+					box.add(tp);
+					content = box;
+					completed.removeAll();
+					completed.add(box);
 					System.out.println("added");
 					
 				} 
 				else {
 					inval = true;
-					invalid.setBounds(0, 0, 100, 50);
-					background.add(invalid);
+					t = 1;
+					for(int i = 0; i < word.size(); i++) {
+						word.get(i).setOpaque(true);
+						word.get(i).setBackground(Color.RED);
+					}
+					
+					timer = new Timer();
+					timer.scheduleAtFixedRate(new TimerTask() {
+						public void run() {
+							t--;
+							if(t == 0) {
+								for(int i = 0; i < word.size(); i++) {
+									word.get(i).setOpaque(false);
+									word.get(i).setBackground(Color.BLUE);
+								}
+								timer.cancel();
+							}
+						}
+					}, 200, 200);
 				}
 				scoreLabel.setText(String.valueOf(scores));
 				System.out.println("word worth "+p);
-				scoreLabel.setFont(font.deriveFont(40f));
+				scoreLabel.setFont(font.deriveFont(60f));
 				
 				
 				
@@ -330,41 +376,82 @@ public class GameBoard implements MouseListener{
 		if (t == 1) {	
 			timer.cancel();
 			JOptionPane.showMessageDialog(null, "Time is UP!");
-			
+			String words = "";
+			for (int i = 0; i<scored.size(); i++) {
+				words += scored.get(i)+",";
+			}
 			if(isHost){
-				Host.sendScore(scores);
+				Host.sendScore(scores, words);
 				clientScore = Host.receiveScore();
+				System.out.println("client finale is "+Host.finale);
 				if(scores > clientScore){
 					Host.sendResult("host");
-					JOptionPane.showMessageDialog(null, "Congrats you WIN! Your Score: " + Integer.toString(scores) + " Client's Score: " + Integer.toString(clientScore));
+					String temp = "Congrats you WIN! \nYour Score: " + Integer.toString(scores) + " \nClient's Score: " + Integer.toString(clientScore)+"\n\n";
+					temp += "Opponent words:\n";
+					String[] l = Host.finale.split("\n");
+					for (int i = 0; i<l.length; i++) {
+						temp += l[i]+"\n";
+					}
+					JOptionPane.showMessageDialog(null, temp);
 				}
 				else if(scores < clientScore){
 					Host.sendResult("client");
-					JOptionPane.showMessageDialog(null, "You Lost! Your Score: " + scores + " Client's Score: " + clientScore);
+					String temp = "You Lost! \nYour Score: " + scores + " \nClient's Score: " + clientScore+"\n\n";
+					temp += "Opponent words:\n";
+					String[] l = Host.finale.split("\n");
+					for (int i = 0; i<l.length; i++) {
+						temp += l[i]+"\n";
+					}
+					JOptionPane.showMessageDialog(null, temp);
 				}
 				else{
 					Host.sendResult("tie");
-					JOptionPane.showMessageDialog(null, "TIE! Your Score: " + scores + " Client's Score: " + clientScore);
+					String temp =  "TIE! \nYour Score: " + scores + " \nClient's Score: " + clientScore+"\n\n";
+					temp += "Opponent words:\n";
+					String[] l = Host.finale.split("\n");
+					for (int i = 0; i<l.length; i++) {
+						temp += l[i]+"\n";
+					}
+					JOptionPane.showMessageDialog(null,temp);
 				}
 				Host.disconnect();
 			}
 			else{
 				hostScore = Client.receiveScore();
-				Client.sendScore(scores);
+				Client.sendScore(scores, words);
+				System.out.println("host finale is "+Client.finale);
 				String result = Client.receiveResult();
 				if(result.compareTo("host") == 0){
-					String temp = "You Lost! Your Score: " + scores + " Host's Score: " + hostScore;
+					String temp = "You Lost! \nYour Score: " + scores + " \nHost's Score: " + hostScore+"\n\n";
+					temp += "Opponent words:\n";
+					String[] l = Client.finale.split("\n");
+					for (int i = 0; i<l.length; i++) {
+						temp += l[i]+"\n";
+					}
 					JOptionPane.showMessageDialog(null, temp);
 				}
 				else if (result.compareTo("client") == 0){
-					JOptionPane.showMessageDialog(null, "Congrats you WIN! Your Score: " + scores + " Host's Score: " + hostScore);
+					String temp = "Congrats you WIN! \nYour Score: " + scores + " \nHost's Score: " + hostScore+"\n\n";
+					temp += "Opponent words:\n";
+					String[] l = Client.finale.split("\n");
+					for (int i = 0; i<l.length; i++) {
+						temp += l[i]+"\n";
+					}
+					JOptionPane.showMessageDialog(null, temp);
 				}
 				else{
-					JOptionPane.showMessageDialog(null, "TIE! Your Score: " + scores + " Host's Score: " + hostScore);
+					String temp = "TIE! \nYour Score: " + scores + " \nHost's Score: " + hostScore + "\n\n";
+					temp += "Opponent words:\n";
+					String[] l = Client.finale.split("\n");
+					for (int i = 0; i<l.length; i++) {
+						temp += l[i]+"\n";
+					}
+					JOptionPane.showMessageDialog(null, temp);
 				}
+
 				Client.disconnect();
 			}
-			
+
 			gameFrame.dispose();
 			new StartScreen();
 			
