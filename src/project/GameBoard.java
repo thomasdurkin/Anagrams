@@ -1,3 +1,4 @@
+package project;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -23,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,10 +35,12 @@ public class GameBoard implements MouseListener{
 	CheckWord checker = new CheckWord();
 	
 	Letter l = new Letter(' ');
-	int t = 60;
+	int t = 10;
 	Timer timer;
 	JLabel timeLabel = new JLabel("00:"+Integer.toString(t));
 	int scores = 0;
+	int hostScore = 0;
+	int clientScore = 0;
 	JLabel scoreLabel = new JLabel(Integer.toString(scores));
 	
 	boolean isHost;
@@ -58,6 +62,11 @@ public class GameBoard implements MouseListener{
 	int index = 0;
 	
 	JLabel completed = new JLabel("dsjkaldsa");
+	
+	boolean val = false;
+	boolean inval = false;
+	
+	
 
 	public GameBoard(boolean host, DataOutputStream o, String s) {
 		tracked = new int[6];
@@ -84,12 +93,17 @@ public class GameBoard implements MouseListener{
 			e.printStackTrace();
 		}
 		
+		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
 		final int SCREEN_WIDTH = (int) screenSize.getWidth();
 		
 //		final int SCREEN_HEIGHT = 300;
 //		final int SCREEN_WIDTH = 300;
+		
+		
+		
+		
 		
 		gameFrame = new JFrame("Anagrams");
 		gameFrame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -107,8 +121,9 @@ public class GameBoard implements MouseListener{
 			letters = l.getLetters();
 			try {
 				strLetters = stringLetters(letters);
-				output.writeUTF(strLetters);
-			} catch(IOException e) {
+				//output.writeUTF(strLetters);
+				Host.sendLetters(strLetters);
+			} catch(Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -198,9 +213,37 @@ public class GameBoard implements MouseListener{
 		enter.setFont(font.deriveFont(30f));
 		enter.setBounds(SCREEN_WIDTH/2 - 125, SCREEN_HEIGHT - 225, 120, 30);
 		enter.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		
+		JLabel valid = new JLabel("Nice Job! +");
+		JLabel invalid = new JLabel("Not a Word");
+		valid.setFont(font.deriveFont(70f));
+		invalid.setFont(font.deriveFont(70f));
+		
 		enter.addMouseListener(new MouseAdapter() {
+			int t;
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				t = 2;
+				timer = new Timer();
+				timer.scheduleAtFixedRate(new TimerTask() {
+					public void run() {
+						t--;
+						System.out.println(t);
+						if(t == 0) {
+							if(val) {
+								System.out.println("removed");
+								
+								background.remove(valid);
+							}
+							else if(inval) {
+								background.remove(invalid);
+							}
+							timer.cancel();
+						}
+						
+					}
+				}, 1000, 1000);
+				
 				String d_word = "";
 				for (int i = 0; i<6; i++) {
 					if (!formed[i].equals("")) {
@@ -221,13 +264,27 @@ public class GameBoard implements MouseListener{
 				if (p>0 && !scored.contains(d_word)) {
 					scores+=p;
 					scored.add(d_word);
+					val = true;
+					valid.setBounds(0, 0, 100, 50);
+					
+					System.out.println("added");
+					
 				} 
+				else {
+					inval = true;
+					invalid.setBounds(0, 0, 100, 50);
+					background.add(invalid);
+				}
 				scoreLabel.setText(String.valueOf(scores));
 				System.out.println("word worth "+p);
 				scoreLabel.setFont(font.deriveFont(40f));
+				
+				
+				
 				clear();
 			}	
 		});
+		background.add(valid);
 		background.add(enter);
 		
 		JLabel reset = new JLabel("RESET");
@@ -270,9 +327,47 @@ public class GameBoard implements MouseListener{
 	}
 
 	public String sec() {
-		if (t == 1) {
+		if (t == 1) {	
 			timer.cancel();
 			JOptionPane.showMessageDialog(null, "Time is UP!");
+			
+			if(isHost){
+				Host.sendScore(scores);
+				clientScore = Host.receiveScore();
+				if(scores > clientScore){
+					Host.sendResult("host");
+					JOptionPane.showMessageDialog(null, "Congrats you WIN! Your Score: " + Integer.toString(scores) + " Client's Score: " + Integer.toString(clientScore));
+				}
+				else if(scores < clientScore){
+					Host.sendResult("client");
+					JOptionPane.showMessageDialog(null, "You Lost! Your Score: " + scores + " Client's Score: " + clientScore);
+				}
+				else{
+					Host.sendResult("tie");
+					JOptionPane.showMessageDialog(null, "TIE! Your Score: " + scores + " Client's Score: " + clientScore);
+				}
+				Host.disconnect();
+			}
+			else{
+				hostScore = Client.receiveScore();
+				Client.sendScore(scores);
+				String result = Client.receiveResult();
+				if(result.compareTo("host") == 0){
+					String temp = "You Lost! Your Score: " + scores + " Host's Score: " + hostScore;
+					JOptionPane.showMessageDialog(null, temp);
+				}
+				else if (result.compareTo("client") == 0){
+					JOptionPane.showMessageDialog(null, "Congrats you WIN! Your Score: " + scores + " Host's Score: " + hostScore);
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "TIE! Your Score: " + scores + " Host's Score: " + hostScore);
+				}
+				Client.disconnect();
+			}
+			
+			gameFrame.dispose();
+			new StartScreen();
+			
 		}
 		return Integer.toString(--t);
 	}

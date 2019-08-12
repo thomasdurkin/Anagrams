@@ -1,3 +1,4 @@
+package project;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -10,6 +11,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -20,11 +22,11 @@ public class StartScreen extends JFrame{
 	
 	public StartScreen() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
-//		final int SCREEN_WIDTH = (int) screenSize.getWidth();
+		final int SCREEN_HEIGHT = (int) screenSize.getHeight();
+		final int SCREEN_WIDTH = (int) screenSize.getWidth();
 		
-		final int SCREEN_HEIGHT = 300;
-		final int SCREEN_WIDTH = 300;
+//		final int SCREEN_HEIGHT = 300;
+//		final int SCREEN_WIDTH = 300;
 		
 		//load in custom font
 		try {

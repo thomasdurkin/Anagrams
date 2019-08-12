@@ -1,3 +1,4 @@
+package project;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -10,10 +11,10 @@ import javax.swing.JOptionPane;
 
 public class Client implements Runnable {
 	
-	Socket s;
+	static Socket s;
 	
-	DataOutputStream output;
-	DataInputStream input;
+	static DataOutputStream output;
+	static DataInputStream input;
 	
 	JFrame frame;
 	
@@ -48,11 +49,11 @@ public class Client implements Runnable {
 		isRunning = true;
 		System.out.println("Connected to host");
 		while(isRunning) {
-		
 			try {
 				String str_in = input.readUTF();
 				if (str_in.length() == 6) {
 					gb = new GameBoard(false, output, str_in);
+					isRunning = false;
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -61,6 +62,58 @@ public class Client implements Runnable {
 			
 		}
 		
+	}
+	
+
+	public static void disconnect() {
+		try {
+			input.close();
+			output.close();
+			s.close();
+		}
+		catch(Exception e) {
+			
+		}
+		
+	}
+	
+	public static void sendScore(int s){
+		String temp = Integer.toString(s);
+		try{
+			output.writeUTF(temp);
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static int receiveScore(){
+		String temp = "";
+		while(temp.compareTo("") == 0) {
+			try{
+			temp = input.readUTF();
+			}
+			catch(IOException e){
+				e.printStackTrace();
+			}
+		}
+		
+		return Integer.parseInt(temp);
+	}
+	
+	public static String receiveResult(){
+		String temp = "";
+		
+		while(temp.compareTo("") == 0){
+			try{
+			temp = input.readUTF();
+			}
+			catch(IOException e){
+				e.printStackTrace();
+			}
+		}
+		
+		return temp;
 	}
 
 }
