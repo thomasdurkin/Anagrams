@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -8,6 +9,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -23,11 +25,10 @@ import javax.swing.JPanel;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameBoard {
+public class GameBoard implements MouseListener{
 	
 	JFrame gameFrame;
 	JPanel gamePanel = new JPanel();
-	int index = 0;
 	
 	Letter l = new Letter(' ');
 	int t = 60;
@@ -47,6 +48,9 @@ public class GameBoard {
 	Font font = null;
 	ArrayList<Letter> letters = new ArrayList<Letter>();
 	boolean[] click;
+	
+	int index = 0;
+	
 
 	public GameBoard(boolean host, DataOutputStream o, String s) {
 		click = new boolean[6];
@@ -57,6 +61,7 @@ public class GameBoard {
 		output = new DataOutputStream(o);
 		strLetters = s;
 		
+	
 		try {
 			font = Font.createFont(Font.TRUETYPE_FONT, new File("../resources/KBChatterBox.ttf"));
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -79,8 +84,10 @@ public class GameBoard {
 		//set background color
 		gameFrame.getContentPane().setBackground(Color.CYAN);
 		
+		JLabel background = new GameBackground();
 		
-		
+		gameFrame.addMouseListener(this);
+
 		//if the gameboard is for the host then get the letters for the game
 		// and send them to the client
 		if(isHost) {
@@ -98,10 +105,10 @@ public class GameBoard {
 			}
 		}
 		
-		int start_x = SCREEN_WIDTH / 2 - 150, start_y = SCREEN_HEIGHT - 300;
+		int start_x = SCREEN_WIDTH / 2 - 160, start_y = SCREEN_HEIGHT - 300;
 		for(int i = 0; i < 6; i++) {
 			JLabel empty = new JLabel("_");
-			empty.setBounds(start_x, start_y - 75, 75, 75);
+			empty.setBounds(start_x, start_y - 75, 60, 60);
 			empty.setFont(font.deriveFont(70f));
 			word.add(empty);
 			empty.addMouseListener(new MouseAdapter() {
@@ -126,14 +133,14 @@ public class GameBoard {
 					}
 				}	
 			});
-			gameFrame.add(empty);
+			background.add(empty);
 			start_x += 65;
 		}
-		start_x = SCREEN_WIDTH / 2 - 150; 
+		start_x = SCREEN_WIDTH / 2 - 160; 
 		start_y = SCREEN_HEIGHT - 300;
 		for(int i = 0; i < letters.size(); i++) {
 			Letter l = letters.get(i);
-			l.letterLabel.setBounds(start_x, start_y, 75, 75);
+			l.letterLabel.setBounds(start_x, start_y, 60, 60);
 			givenLetters.add(l.letterLabel);
 			l.letterLabel.addMouseListener(new MouseAdapter() {
 				@Override
@@ -148,26 +155,52 @@ public class GameBoard {
 					}
 				}	
 			});
-			gameFrame.add(l.letterLabel);
+			background.add(l.letterLabel);
 			start_x += 65;
 		}
 		
-		Box b = Box.createVerticalBox();
+		
 		
 		timeLabel.setFont(new Font(timeLabel.getFont().getName(), Font.PLAIN, 60));
-		b.add(timeLabel);
+		timeLabel.setBounds(SCREEN_WIDTH/2 - 50, 50, 100, 100);
+		background.add(timeLabel);
 		
 		
-		JLabel sc = new JLabel("Scores");
+		JLabel sc = new JLabel("Score: ");
 		sc.setFont(font.deriveFont(40f));
-		
-		b.add(sc);
+		sc.setBounds(SCREEN_WIDTH/2 - 100, 120, 250, 50);
+		background.add(sc);
+
 		scoreLabel.setFont(font.deriveFont(40f));
-		//		scoreLabel.setFont(new Font(scoreLabel.getFont().getName(), Font.PLAIN, 100));
-		b.add(scoreLabel);
-		gamePanel.add(b);
-		gameFrame.add(gamePanel, BorderLayout.CENTER);
+		scoreLabel.setBounds(SCREEN_WIDTH/2 + 50, 120, 250, 50);
+		background.add(scoreLabel);
+		
+		JLabel enter = new JLabel("ENTER");
+		enter.setFont(font.deriveFont(30f));
+		enter.setBounds(SCREEN_WIDTH/2 - 125, SCREEN_HEIGHT - 225, 120, 30);
+		enter.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		enter.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("submit word");
+			}	
+		});
+		background.add(enter);
+		
+		JLabel reset = new JLabel("RESET");
+		reset.setFont(font.deriveFont(30f));
+		reset.setBounds(SCREEN_WIDTH/2 + 50, SCREEN_HEIGHT - 225, 120, 30);
+		reset.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		reset.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("reseting word");
+			}	
+		});
+		background.add(reset);
+
 		startTime();
+		gameFrame.setContentPane(background);
 		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameFrame.setVisible(true);
 		
@@ -202,6 +235,36 @@ public class GameBoard {
 			allLetters += l.letter;
 		}
 		return allLetters;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		System.out.println(arg0.getX() + " " + arg0.getY());
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
