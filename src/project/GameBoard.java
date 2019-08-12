@@ -35,7 +35,7 @@ public class GameBoard implements MouseListener{
 	CheckWord checker = new CheckWord();
 	
 	Letter l = new Letter(' ');
-	int t = 10;
+	int t = 60;
 	Timer timer;
 	JLabel timeLabel = new JLabel("00:"+Integer.toString(t));
 	int scores = 0;
