@@ -16,7 +16,7 @@ Java GUI Anagrams Game
 
 *You should be at this window:*
 ![Screenshot from 2019-08-12 17-25-21](https://user-images.githubusercontent.com/47041789/62899630-38bf9f80-bd26-11e9-8c67-feb2fb7b1d86.png)
-
+Click host or join to start a game.
       
       
 
