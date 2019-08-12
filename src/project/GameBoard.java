@@ -59,6 +59,7 @@ public class GameBoard implements MouseListener{
 	String[] formed;
 	ArrayList<String> scored = new ArrayList<String>();
 	
+	
 	int index = 0;
 	
 	JLabel completed = new JLabel("dsjkaldsa");
@@ -213,36 +214,15 @@ public class GameBoard implements MouseListener{
 		enter.setFont(font.deriveFont(30f));
 		enter.setBounds(SCREEN_WIDTH/2 - 125, SCREEN_HEIGHT - 225, 120, 30);
 		enter.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		
-		JLabel valid = new JLabel("Nice Job! +");
-		JLabel invalid = new JLabel("Not a Word");
-		valid.setFont(font.deriveFont(70f));
-		invalid.setFont(font.deriveFont(70f));
+
 		
 		enter.addMouseListener(new MouseAdapter() {
+	
+			
 			int t;
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				t = 2;
-				timer = new Timer();
-				timer.scheduleAtFixedRate(new TimerTask() {
-					public void run() {
-						t--;
-						System.out.println(t);
-						if(t == 0) {
-							if(val) {
-								System.out.println("removed");
-								
-								background.remove(valid);
-							}
-							else if(inval) {
-								background.remove(invalid);
-							}
-							timer.cancel();
-						}
-						
-					}
-				}, 1000, 1000);
+				
 				
 				String d_word = "";
 				for (int i = 0; i<6; i++) {
@@ -264,16 +244,52 @@ public class GameBoard implements MouseListener{
 				if (p>0 && !scored.contains(d_word)) {
 					scores+=p;
 					scored.add(d_word);
-					val = true;
-					valid.setBounds(0, 0, 100, 50);
 					
-					System.out.println("added");
+					val = true;
+					t = 1;
+					for(int i = 0; i < word.size(); i++) {
+						word.get(i).setOpaque(true);
+						word.get(i).setBackground(Color.GREEN);
+					}
+					
+					timer = new Timer();
+					timer.scheduleAtFixedRate(new TimerTask() {
+						public void run() {
+							t--;
+							if(t == 0) {
+								for(int i = 0; i < word.size(); i++) {
+									word.get(i).setOpaque(false);
+									word.get(i).setBackground(Color.BLUE);
+								}
+								timer.cancel();
+							}
+						}
+					}, 200, 200);
+					
 					
 				} 
 				else {
 					inval = true;
-					invalid.setBounds(0, 0, 100, 50);
-					background.add(invalid);
+					t = 1;
+					for(int i = 0; i < word.size(); i++) {
+						word.get(i).setOpaque(true);
+						word.get(i).setBackground(Color.RED);
+					}
+					
+					timer = new Timer();
+					timer.scheduleAtFixedRate(new TimerTask() {
+						public void run() {
+							t--;
+							if(t == 0) {
+								for(int i = 0; i < word.size(); i++) {
+									word.get(i).setOpaque(false);
+									word.get(i).setBackground(Color.BLUE);
+								}
+								timer.cancel();
+							}
+						}
+					}, 200, 200);
+					
 				}
 				scoreLabel.setText(String.valueOf(scores));
 				System.out.println("word worth "+p);
@@ -284,7 +300,6 @@ public class GameBoard implements MouseListener{
 				clear();
 			}	
 		});
-		background.add(valid);
 		background.add(enter);
 		
 		JLabel reset = new JLabel("RESET");

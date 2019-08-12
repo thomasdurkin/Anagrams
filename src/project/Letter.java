@@ -1,4 +1,5 @@
 package project;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -36,6 +37,8 @@ public class Letter{
 		this.letterLabel.setFont(this.font.deriveFont(70f));
 		this.letterLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
+ 
+		
 	}
 	
 	
@@ -67,8 +70,8 @@ public class Letter{
 						vowelcount++;
 					}
 					//make sure there are not more then 4 vowels
-					if(vowelcount > 4)
-						break;
+					if(vowelcount > 3)
+						continue;
 					Letter temp = new Letter(l);
 					//no more than two of the same letters
 					if(Collections.frequency(letters, temp) > 2)
