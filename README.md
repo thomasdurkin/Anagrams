@@ -7,7 +7,7 @@ Java GUI Anagrams Game
   * mysql-connector: https://do.co/2IZO9wk
       * add to external java library
       
-      
+## Start-up:
 * 1). clone the repository
 * 2). within terminal go to project directory
 * 3). cd to resource folder and type mysql -u root < setup.sql 
