@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JLabel;
@@ -16,7 +19,6 @@ public class Letter{
 	Font font;
 	char letter;
 	
-	String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	public Letter(char letter) {
 		this.letterLabel = new JLabel(String.valueOf(letter));
 		this.letter = letter;
@@ -39,61 +41,78 @@ public class Letter{
 	public ArrayList<Letter> getLetters(){
 		
 		int vowelcount = 0;
-		int consonantcount = 0;
-		String vowels = "AEIOU";
-		String consonants = "BCDFGHJKLMNPQRSTVWXYZ";
-
-		ArrayList<Letter> letters = new ArrayList<Letter>();
-		ArrayList<Character> vowelList = new ArrayList<Character>();
-		ArrayList<Character> consonantList = new ArrayList<Character>();
-
-		while(letters.size() < 6){
-			Letter temp = randomLetter();
-	
-			//Checking Rules to see if current letter can be added to list
-			if(vowels.indexOf(temp.letter) != -1){ //current letter is vowel
-				vowelcount++;
-				vowelList.add(temp.letter);
 		
-				if((vowelcount < 4) && (Collections.frequency(vowelList, temp.letter) < 3)){ //if vowel can be added to Letters List
+		String vowels = "AEIOU";
+
+		HashMap<Character, Double > all = generate();
+		ArrayList<Letter> letters = new ArrayList<Letter>();
+		
+		double total = 0.0;
+		
+		for(Double val: all.values()) {
+			total += val;
+			System.out.println(total);
+		}
+		//loop until we get 6 letters
+		while(letters.size() < 6){
+			double rand = Math.random() * total;
+			double weightcnt = 0.0;
+			for(Character l: all.keySet()) {
+				weightcnt += all.get(l);
+				//grab letter based on weight
+				if(weightcnt >= rand) {
+					String s = l.toString();
+					if(vowels.contains(s)) {
+						vowelcount++;
+					}
+					//make sure there are not more then 4 vowels
+					if(vowelcount > 4)
+						break;
+					Letter temp = new Letter(l);
+					//no more than two of the same letters
+					if(Collections.frequency(letters, temp) > 2)
+						continue;
 					letters.add(temp);
-				}
-				else{ //if vowel cannot be added to list, remove from counter and vowel list
-					vowelcount--;
-					vowelList.remove(temp.letter);
+					break;
 				}
 			}
-			
-			else{
-				if(consonantcount < 4) {//current letter is consonant
-					consonantcount++;
-					consonantList.add(temp.letter);
-			
-					if(Collections.frequency(consonantList, temp.letter) < 3){ //if consonant can be added to letters list
-						letters.add(temp);
-					}
-					else{ //if consonant cannot be added to letters list, remove from consonant list
-						consonantList.remove(temp.letter);
-						consonantcount--;
-					}
-				}
+			//make sure we have more then 2 vowels
+			if(letters.size() == 6 && vowelcount < 2) {
+				letters.clear();
 			}
 		}
-
 		return letters;
-
-
 	}
 	
-	Letter randomLetter() {
-		
-		Random rand = new Random();
-		int rand_int = rand.nextInt(25);
-		char letter = alphabet.charAt(rand_int);
-		
-		System.out.println(letter);
-		Letter l = new Letter(letter);
+	//generate all letters and how common they are
+	public HashMap<Character, Double> generate(){
+		HashMap<Character, Double> l = new HashMap<Character, Double>();
+		l.put('A', 8.50);
+		l.put('B', 2.07);
+		l.put('C', 4.54);
+		l.put('D', 3.38);
+		l.put('E', 11.16);
+		l.put('F', 1.81);
+		l.put('G', 2.47);
+		l.put('H', 3.00);
+		l.put('I', 7.55);
+		l.put('J', 0.20);
+		l.put('K', 1.10);
+		l.put('L', 5.49);
+		l.put('M', 3.01);
+		l.put('N', 6.65);
+		l.put('O', 7.16);
+		l.put('P', 3.17);
+		l.put('Q', 0.20);
+		l.put('R', 7.58);
+		l.put('S', 5.74);
+		l.put('T', 6.95);
+		l.put('U', 3.63);
+		l.put('V', 1.01);
+		l.put('W', 1.29);
+		l.put('X', 0.29);
+		l.put('Y', 1.78);
+		l.put('Z', 0.27);
 		return l;
-		
 	}
 }
