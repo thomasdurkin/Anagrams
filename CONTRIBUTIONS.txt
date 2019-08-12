@@ -1,0 +1,1 @@
+Currently, we are not accepting new contributors because the project is pretty small right now. In the future, if we try to implement a web verision, then we will be looking for new contributors.
