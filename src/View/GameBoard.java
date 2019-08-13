@@ -399,6 +399,7 @@ public class GameBoard implements MouseListener{
 					}
 					JOptionPane.showMessageDialog(null,temp);
 				}
+				Host.finale = "";
 				Host.disconnect();
 			}
 			else{
@@ -433,7 +434,7 @@ public class GameBoard implements MouseListener{
 					}
 					JOptionPane.showMessageDialog(null, temp);
 				}
-
+				Client.finale = "";
 				Client.disconnect();
 			}
 
