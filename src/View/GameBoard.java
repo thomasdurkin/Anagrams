@@ -403,6 +403,7 @@ public class GameBoard implements MouseListener{
 				Host.disconnect();
 			}
 			else{
+				Client.finale = "";
 				hostScore = Client.receiveScore();
 				Client.sendScore(scores, words);
 				System.out.println("host finale is "+Client.finale);
@@ -434,7 +435,6 @@ public class GameBoard implements MouseListener{
 					}
 					JOptionPane.showMessageDialog(null, temp);
 				}
-				Client.finale = "";
 				Client.disconnect();
 			}
 
