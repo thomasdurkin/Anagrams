@@ -1,24 +1,14 @@
-package project;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-
+package Model;
+import java.awt.*;
+import java.io.*;
+import java.util.*;
 import javax.swing.JLabel;
 
 
 public class Letter{
-	JLabel letterLabel;
+	public JLabel letterLabel;
 	Font font;
-	char letter;
+	public char letter;
 	
 	public Letter(char letter) {
 		this.letterLabel = new JLabel(String.valueOf(letter));

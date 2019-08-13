@@ -1,11 +1,8 @@
-package project;
-import java.awt.Graphics;
-import java.awt.Image;
+package View;
+import java.awt.*;
+import javax.swing.*;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-
-class Background extends JLabel{
+public class Background extends JLabel{
 	Image bg = new ImageIcon("../resources/background.jpg").getImage();
 	@Override
 	public void paintComponent(Graphics g) {

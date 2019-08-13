@@ -1,13 +1,9 @@
-package project;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
+package Control;
+import java.io.*;
+import java.net.*;
+import javax.swing.*;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import View.*;
 
 public class Client implements Runnable {
 	
@@ -22,7 +18,7 @@ public class Client implements Runnable {
 	boolean connected = false;
 	String ip;
 	GameBoard gb;
-	static String finale = "";
+	public static String finale = "";
 	
 	public Client() {
 		ip = JOptionPane.showInputDialog("Please enter a valid ip address to connect to.");

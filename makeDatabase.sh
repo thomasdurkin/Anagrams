@@ -1,3 +1,3 @@
 cd src
-javac project/LoadData.java
-java project.LoadData
+javac Model/LoadData.java
+java Model.LoadData

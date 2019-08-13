@@ -1,11 +1,8 @@
-package project;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+package Control;
+import java.io.*;
+import java.net.*;
 
-import javax.swing.JFrame;
+import View.*;
 
 public class Host implements Runnable{
 	
@@ -18,7 +15,7 @@ public class Host implements Runnable{
 	boolean isRunning = false;
 	boolean connected = false;
 	
-	static String finale = "";
+	public static String finale = "";
 	
 	public Host() {
 		try {
