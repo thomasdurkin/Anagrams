@@ -3,6 +3,7 @@ Java GUI Anagrams Game
 
 # Running the code:
 ## Requirements: 
+  * java-8-openjdk-amd64
   * mysql: https://do.co/2IZO9wk
   * mysql-connector: https://do.co/2IZO9wk
       * add to external java library
