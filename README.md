@@ -17,6 +17,7 @@ Java GUI Anagrams Game
 
 ## MySQL Credentials:
 User: root
+
 Password: ""                 (no password)
 
 *You should be at this window:*
