@@ -365,6 +365,7 @@ public class GameBoard implements MouseListener{
 			for (int i = 0; i<scored.size(); i++) {
 				words += scored.get(i)+",";
 			}
+			scored.clear();
 			if(isHost){
 				Host.sendScore(scores, words);
 				clientScore = Host.receiveScore();
@@ -400,6 +401,7 @@ public class GameBoard implements MouseListener{
 					JOptionPane.showMessageDialog(null,temp);
 				}
 				Host.finale = "";
+				content.removeAll();
 				Host.disconnect();
 			}
 			else{
@@ -435,6 +437,7 @@ public class GameBoard implements MouseListener{
 					}
 					JOptionPane.showMessageDialog(null, temp);
 				}
+				content.removeAll();
 				Client.disconnect();
 			}
 
