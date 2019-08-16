@@ -11,9 +11,9 @@ Java GUI Anagrams Game
 ## Start-up:
 * 1). clone the repository
 * 2). within terminal go to project directory
-* 3). type sh setup.sh
-* 4). cd to project root folder and type sh storeDatabse.sh to create the words database
-* 5). stay in root folder and type sh play.sh to start up the game
+* 3). type sh setup.sh to set up the database
+* 4). type sh makeDatabse.sh to load in the data to words database
+* 5). type sh play.sh to start up the game
 
 ## MySQL Credentials:
 User: root
@@ -23,6 +23,9 @@ Password: ""                 (no password)
 *You should be at this window:*
 ![Screenshot from 2019-08-12 17-25-21](https://user-images.githubusercontent.com/47041789/62899630-38bf9f80-bd26-11e9-8c67-feb2fb7b1d86.png)
 Click host or join to start a game.
-      
+
+The game needs one host and one client to start. Both server and client has to follow the Start-up instruction above.
+
+As a client, you will need the IP address of the Host. As a host, you do not need to worry about anything.    
       
 
