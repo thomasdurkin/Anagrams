@@ -11,7 +11,7 @@ Java GUI Anagrams Game
 ## Start-up:
 * 1). clone the repository
 * 2). within terminal go to project directory
-* 3). type mysql -u root < setup.sql 
+* 3). type sh setup.sh
 * 4). cd to project root folder and type sh storeDatabse.sh to create the words database
 * 5). stay in root folder and type sh play.sh to start up the game
 
