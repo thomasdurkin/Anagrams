@@ -1,5 +1,8 @@
 # Anagrams
-Java GUI Anagrams Game
+Java GUI Anagrams Game. Two player game in which players must build words with the 6 random letters in order to score points. Point system is based off of the length of the word and players are given 60 seconds in order to get the most points.
+
+# Mechanics
+The 6 letters are randomly generated so each game is different. No more than two vowels will be given and the letters are weighted based on their frequency in the English language. Created words are checked in realtime with a mysql database containing all words in the English language. Players will be notified if the submitted word is correct with the letters turning green and red if the word was invalid. The game will present all correctly entered words on the gameboard so that the players remember which words they have used.
 
 # Running the code:
 ## Requirements: 
